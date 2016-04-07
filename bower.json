@@ -1,0 +1,25 @@
+{
+  "name": "jchan-photo",
+  "description": "Photography showcase of Jacky Chan",
+  "main": "",
+  "authors": [
+    "Jackson <jacky.chan@team.telstra.com>"
+  ],
+  "license": "MIT",
+  "moduleType": [
+    "globals"
+  ],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "jquery": "~2.2.3",
+    "angular": "~1.5.3"
+  }
+}
