@@ -12,7 +12,7 @@ module.exports = function(grunt) {
             bootstrap: 'vendor/bootstrap',
             css: 'css',
             copy: ['css/**', '!css/*.css', 'js/**', '!js/main.js', 'fonts/**', 'inc/**', 'favicon.png'],
-            html: ['<%= cwd %>/index.html']
+            html: ['index.html']
         },
         bower: {
             install: {
@@ -98,25 +98,40 @@ module.exports = function(grunt) {
             },
         },
         watch: {
+            options: {
+                livereload: true
+            },
             less: {
                 files: '**/*.less',
                 tasks: ['less'],
                 options: {
                     cwd: '<%= config.cwd %>'
-                }
+                },
             },
             js: {
                 files: 'js/*.js',
                 tasks: ['concat:js'],
                 options: {
                     cwd: '<%= config.cwd %>'
-                }
+                },
             },
             html: {
                 files: '*.html',
                 tasks: ['default'],
                 options: {
                     cwd: '<%= config.cwd %>'
+                }
+            }
+        },
+        connect: {
+            server: {
+                options: {
+                    port: 9001,
+                    base: '.',
+                    hostname: 'localhost',
+                    protocol: 'http',
+                    livereload: true,
+                    open: true
                 }
             }
         }
@@ -127,4 +142,5 @@ module.exports = function(grunt) {
 
     // create entry points
     grunt.registerTask("default", ['less', 'concat:js', 'htmlmin', 'copy:move']);
+    grunt.registerTask("server", ['connect', 'watch']);
 };
