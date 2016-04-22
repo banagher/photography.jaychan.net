@@ -2,145 +2,203 @@
 
 module.exports = function(grunt) {
 
-    grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
+	// Configuring paths for the application
+	var pathConfig = {
+		cwd: 'src',
+		dist: 'dist',
+		bootstrap: 'vendor/bootstrap',
+		css: 'css',
+		copy: ['css/**', '!css/*.css', 'fonts/**', 'inc/**', 'favicon.png'],
+		html: ['index.html']
+	};
 
-        // files and directorys 
-        config: {
-            cwd: 'src',
-            dist: 'dist',
-            bootstrap: 'vendor/bootstrap',
-            css: 'css',
-            copy: ['css/**', '!css/*.css', 'js/**', '!js/main.js', 'fonts/**', 'inc/**', 'favicon.png'],
-            html: ['index.html']
-        },
-        bower: {
-            install: {
-                options: {
-                    targetDir: '<%= config.cwd %>/vendor/',
-                    layout: 'byType',
-                    install: true,
-                    verbose: false,
-                    cleanTargetDir: false,
-                    cleanBowerDir: false,
-                    bowerOptions: {}
-                }
-            }
-        },
-        less: {
-            bootstrap: {
-                options: {
-                    cleancss: true,
-                    compress: false,
-                },
-                files: { "dist/css/bootstrap.css": "src/vendor/bootstrap/less/bootstrap.less" }
-            },
-            theme: {
-                options: {
-                    cleancss: true,
-                    compress: false,
-                },
-                files: { "dist/css/jchan-theme.css": "src/vendor/bootstrap/less/theme.less" }
-            }
-        },
-        htmlhint: {
-            templates: {
-                options: {
-                    'attr-lower-case': true
-                },
-                src: ['dist/*.html']
-            }
-        },
-        htmlmin: {
-            build: {
-                options: {
-                    removeComments: true,
-                    collapseWhitespace: true
-                },
-                files: [{
-                    expand: true,
-                    cwd: '<%= config.cwd %>',
-                    src: '<%= config.html %>',
-                    dest: '<%= config.dist %>'
-                }]
-            }
-        },
-        concat: {
-            options: {
-                banner: '<%= banner %>\n<%= jqueryCheck %>\n<%= jqueryVersionCheck %>',
-                stripBanners: false
-            },
-            js: {
-                src: [
-                    '<%= config.cwd %>/<%= config.bootstrap %>/js/transition.js',
-                    '<%= config.cwd %>/<%= config.bootstrap %>/js/alert.js',
-                    '<%= config.cwd %>/<%= config.bootstrap %>/js/button.js',
-                    '<%= config.cwd %>/<%= config.bootstrap %>/js/carousel.js',
-                    '<%= config.cwd %>/<%= config.bootstrap %>/js/collapse.js',
-                    '<%= config.cwd %>/<%= config.bootstrap %>/js/dropdown.js',
-                    '<%= config.cwd %>/<%= config.bootstrap %>/js/modal.js',
-                    '<%= config.cwd %>/<%= config.bootstrap %>/js/tooltip.js',
-                    '<%= config.cwd %>/<%= config.bootstrap %>/js/popover.js',
-                    '<%= config.cwd %>/<%= config.bootstrap %>/js/scrollspy.js',
-                    '<%= config.cwd %>/<%= config.bootstrap %>/js/tab.js',
-                    '<%= config.cwd %>/<%= config.bootstrap %>/js/affix.js',
-                    '<%= config.cwd %>/js/jchan-custom.js'
-                ],
-                dest: 'dist/js/<%= pkg.name %>.js'
-            }
-        },
-        copy: {
-            move: {
-                expand: true,
-                cwd: '<%= config.cwd %>',
-                src: '<%= config.copy %>',
-                dest: '<%= config.dist %>',
-            },
-        },
-        watch: {
-            options: {
-                livereload: true
-            },
-            less: {
-                files: '**/*.less',
-                tasks: ['less'],
-                options: {
-                    cwd: '<%= config.cwd %>'
-                },
-            },
-            js: {
-                files: 'js/*.js',
-                tasks: ['concat:js'],
-                options: {
-                    cwd: '<%= config.cwd %>'
-                },
-            },
-            html: {
-                files: '*.html',
-                tasks: ['default'],
-                options: {
-                    cwd: '<%= config.cwd %>'
-                }
-            }
-        },
-        connect: {
-            server: {
-                options: {
-                    port: 9001,
-                    base: '.',
-                    hostname: 'localhost',
-                    protocol: 'http',
-                    livereload: true,
-                    open: true
-                }
-            }
-        }
-    });
+	grunt.initConfig({
+		pkg: grunt.file.readJSON('package.json'),
 
-    //load the devDependancies tasks
-    require('load-grunt-tasks')(grunt, { scope: 'devDependencies' });
+		paths: pathConfig,
 
-    // create entry points
-    grunt.registerTask("default", ['less', 'concat:js', 'htmlmin', 'copy:move']);
-    grunt.registerTask("server", ['connect', 'watch']);
+		bower: {
+			install: {
+				options: {
+					targetDir: '<%= paths.cwd %>/vendor/',
+					layout: 'byType',
+					install: true,
+					verbose: false,
+					cleanTargetDir: false,
+					cleanBowerDir: false,
+					bowerOptions: {}
+				}
+			}
+		},
+		less: {
+			dev: {
+				options: {
+					cleancss: false,
+					compress: false
+				},
+				files: {
+					'dist/css/bootstrap.css': 'src/vendor/bootstrap/less/bootstrap.less',
+					'dist/css/tmedia.css': 'src/less/tmedia.less'
+				}
+			},
+			prod: {
+				options: {
+					cleancss: true,
+					compress: true
+				},
+				files: {
+					'dist/css/bootstrap.css': 'src/vendor/bootstrap/less/bootstrap.less',
+					'dist/css/tmedia.css': 'src/less/tmedia.less'
+				}
+			}
+		},
+		htmlmin: {
+			options: {
+				removeComments: false,
+				collapseWhitespace: false
+			},
+			build: {
+				files: [{
+					expand: true,
+					cwd: '<%= paths.cwd %>',
+					src: '*.html',
+					dest: '<%= paths.dist %>'
+				}]
+			},
+			partials: {
+				files: [{
+					expand: true,
+					cwd: '<%= paths.cwd %>/app/partials',
+					src: '*',
+					dest: '<%= paths.dist %>/partials'
+				}]
+			}
+		},
+		useminPrepare: {
+			html: '<%= paths.cwd %>/index.html',
+			options: {
+				dest: '<%= paths.dist %>',
+				flow: {
+					steps: {
+						js: ['concat', 'uglifyjs']
+					},
+					post: {}
+				}
+			}
+		},
+		//Performs rewrites based on filerev and the useminPrepare configuration
+		usemin: {
+			html: ['<%= paths.dist %>/index.html'],
+			css: ['<%= paths.dist %>/css/{,*/}*.css']
+			//js: ['<%= paths.dist %>/scripts/{,*/}*.js'],
+		},
+		jshint: {
+			all: ['Gruntfile.js', '<%= paths.cwd %>/js/**/*.js', '<%= paths.cwd %>/app/**/*.js'],
+			options: {
+				jshintrc: '.jshintrc'
+			}
+		},
+		jscs: {
+			src: ['Gruntfile.js', '<%= paths.cwd %>/js/**/*.js', '<%= paths.cwd %>/app/**/*.js'],
+			options: {
+				config: '.jscsrc'
+			}
+		},
+		// Empties folders to start fresh
+		clean: {
+			dist: {
+				files: [{
+					dot: true,
+					src: [
+						'.tmp',
+						'<%= paths.dist %>/{,*/}*',
+						'!<%= paths.dist %>/.git{,*/}*'
+					]
+				}]
+			},
+			server: '.tmp'
+		},
+		copy: {
+			prod: {
+				expand: true,
+				cwd: '<%= paths.cwd %>',
+				src: '<%= paths.copy %>',
+				dest: '<%= paths.dist %>'
+			},
+			dev: {
+				expand: true,
+				cwd: '<%= paths.cwd %>',
+				src: ['js/**/*.js', 'vendor/**/*.js'],
+				dest: '<%= paths.dist %>'
+			}
+		},
+		watch: {
+			options: {
+				livereload: true
+			},
+			less: {
+				files: '**/*.less',
+				tasks: ['less'],
+				options: {
+					cwd: '<%= paths.cwd %>'
+				}
+			},
+			js: {
+				files: ['js/*.js', 'app/**/*.js'],
+				tasks: ['jshint:all', 'jscs', 'concat:js', 'copy:prod'],
+				options: {
+					cwd: '<%= paths.cwd %>'
+				}
+			},
+			html: {
+				files: '**/*.html',
+				tasks: ['htmlmin'],
+				options: {
+					cwd: '<%= paths.cwd %>'
+				}
+			}
+		},
+		connect: {
+			server: {
+				options: {
+					port: 9001,
+					base: '.',
+					hostname: 'localhost',
+					protocol: 'http',
+					livereload: true,
+					open: true
+				}
+			}
+		}
+	});
+
+	//load the devDependancies tasks
+	require('load-grunt-tasks')(grunt, { scope: 'devDependencies' });
+
+	// Test and dev build
+	grunt.registerTask('default', [
+		'clean:dist',
+		'less:dev',
+		'jshint:all',
+		'jscs',
+		'htmlmin',
+		'copy:dev'
+	]);
+
+	// Prod build
+	grunt.registerTask('prod', [
+		'clean:dist',
+		'htmlmin',
+		'less:prod',
+		'useminPrepare',
+		'concat',
+		'uglify',
+		'jshint:all',
+		'jscs',
+		'usemin',
+		'copy:prod'
+	]);
+
+	// Start server
+	grunt.registerTask('serve', ['connect', 'watch']);
 };

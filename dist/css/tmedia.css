@@ -1,0 +1,22 @@
+.ng-cloak {
+  display: none !important;
+}
+#jchan {
+  padding-top: 71px;
+  background: grey;
+  color: #999;
+}
+#jchan #mainNav.navbar-default {
+  background-color: #000000;
+  border-color: transparent;
+}
+#jchan #header-section .header-content {
+  padding: 0 30px 45px 30px;
+}
+#jchan #content-section {
+  padding: 0 30px 45px 30px;
+}
+#jchan #content-section .content-wrap {
+  background: #000000;
+  overflow: hidden;
+}

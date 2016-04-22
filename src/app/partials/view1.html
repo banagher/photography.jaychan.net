@@ -1,0 +1,27 @@
+<div class="header-content-inner">
+	<h1>Your Favorite Source of Free Bootstrap Themes</h1>
+	<hr>
+	<p>Start Bootstrap can help you build better websites using the Bootstrap CSS framework! Just download your template and start going, no strings attached!</p>
+	<a href="#about" class="btn btn-primary btn-xl page-scroll">Find Out More</a>
+	<br />
+	<br /> name:
+	<br />
+	<input type="text" data-ng-model="filter.name" /> {{2+2}}
+	<br />
+	<br />
+	<ul>
+		<li data-ng-repeat="cust in customers | filter:filter.name |orderBy:'city' ">{{ cust.name | uppercase }} - {{ cust.city }}</li>
+	</ul>
+
+	<br>
+	Customer Name: <br />
+	<input type="text" data-ng-model="newCustomer.name" />
+	<br />
+	Customer City: <br />
+	<input type="text" data-ng-model="newCustomer.city" />
+	<br />
+	<br />
+	<button data-ng-click="addCustomer()">Add Customer</button>
+	<br>
+	<a href="#/view2">View 2</a>
+</div>
